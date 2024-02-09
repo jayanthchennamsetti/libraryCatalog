@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Add New Book</h1>
+    <form id="add-book-form">
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" id="title" required>
+        </div>
+        <div>
+            <label for="author">Author:</label>
+            <input type="text" id="author" required>
+        </div>
+        <div>
+            <label for="isbn">ISBN:</label>
+            <input type="text" id="isbn" required>
+        </div>
+        <div>
+            <label for="genre">Genre:</label>
+            <input type="text" id="genre" required>
+        </div>
+        <div>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" min="1" required>
+        </div>
+        <div>
+            <label for="image">Image:</label>
+            <input type="file" id="image" accept="image/*" required>
+        </div>
+        <button type="submit">Add Book</button>
+    </form>
+
+    <script>
+        // Function to handle form submission
+        document.getElementById('add-book-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get form input values
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const isbn = document.getElementById('isbn').value;
+            const genre = document.getElementById('genre').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const image = document.getElementById('image').files[0]; // Get the uploaded image file
+    
+            // Check if image is uploaded
+            if (!image) {
+                alert('Please upload an image.');
+                return;
+            }
+    
+            // Create a book object with availability set to true
+            const book = {
+                title: title,
+                author: author,
+                isbn: isbn,
+                genre: genre,
+                quantity: quantity,
+                availability: true // Set availability to true by default
+            };
+    
+            // Retrieve existing books from local storage
+            let existingBooks = JSON.parse(localStorage.getItem('libraryCatalog')) || [];
+    
+            // Check if the book already exists in the library catalog
+            const isBookAlreadyPresent = existingBooks.some(existingBook => {
+                return (
+                    existingBook.title === title &&
+                    existingBook.author === author &&
+                    existingBook.isbn === isbn &&
+                    existingBook.genre === genre
+                );
+            });
+    
+            // If the book is already present, display an alert
+            if (isBookAlreadyPresent) {
+                alert('This book is already present in the library.');
+                return; // Exit the function to prevent adding duplicate book
+            }
+    
+            // Read the image file and convert it to a data URL
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                // Add the data URL of the image to the book object
+                book.image = event.target.result;
+    
+                // Add the new book to the array of existing books
+                existingBooks.push(book);
+    
+                // Save the updated array of books to local storage
+                localStorage.setItem('libraryCatalog', JSON.stringify(existingBooks));
+    
+                // Redirect back to the admin catalog page
+                window.location.href = 'adminCatalog.html';
+            };
+            reader.readAsDataURL(image); // Read the image file as a data URL
+        });
+    </script>
+    
+</body>
+</html>

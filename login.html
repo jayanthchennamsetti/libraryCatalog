@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Page</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url(backgroundimg.jpg);
+  }
+  
+  #loginForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+  #adminLoginForm {
+    background-color: #fff;
+    padding: 35px;
+    margin-left:30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<div id="loginForm">
+  <h2>User Login</h2>
+
+  <form id="userLoginForm">
+    <label for="userEmail">Email:</label><br>
+    <input type="email" id="userEmail" name="userEmail"><br>
+    <label for="userPassword">Password:</label><br>
+    <input type="password" id="userPassword" name="userPassword"><br><br>
+    <button type="submit">Login</button>
+    <div style="margin-top: 10px;margin-left: -2px;"><a href="signup.html" style="text-decoration:none; color:#0e8734;">Don't have an account! click me to signUp.</a></div>
+  </form>
+</div>
+<div id="adminLoginForm">
+  <h2>Admin Login</h2>
+
+  <form id="adminForm">
+    <label for="adminEmail">Email:</label><br>
+    <input type="email" id="adminEmail" name="adminEmail"><br>
+    <label for="adminPassword">Password:</label><br>
+    <input type="password" id="adminPassword" name="adminPassword"><br><br>
+    <button type="submit">Login</button>
+  </form>
+</div>
+
+<script>  
+  document.getElementById("userLoginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    var email = document.getElementById("userEmail").value;
+    var password = document.getElementById("userPassword").value;
+    
+    var users = JSON.parse(localStorage.getItem("users")) || [];
+    var foundUser = users.find(function(user) {
+      return user.email === email && user.password === password;
+    });
+    var foundMail = users.find(function(user) {
+      return user.email === email && user.password !== password;
+    });
+    if (foundUser) {
+      alert("User logged in successfully! User ID: " + foundUser.id);
+      localStorage.setItem("loggedInUserId", foundUser.id);
+      initializeUserCart(foundUser.id); // Initialize or retrieve user's cart
+      window.location.href = "userCatalog.html";
+    } else if(foundMail) {
+      alert("Invalid password. Please try again.");
+    }
+    else{
+      alert("Account not found!. please sign up");
+    }
+    
+    document.getElementById("userLoginForm").reset();
+  });
+  
+  // Function to initialize or retrieve user's cart from local storage
+  function initializeUserCart(userId) {
+    var userCart = JSON.parse(localStorage.getItem("userCart_" + userId));
+    if (!userCart) {
+      // Create a new cart for the user if it doesn't exist
+      userCart = [];
+      localStorage.setItem("userCart_" + userId, JSON.stringify(userCart));
+    }
+    // You can use the userCart for further processing
+  }
+  
+  // Admin login functionality
+  var adminEmail = "admin@example.com";
+  var adminPassword = "admin";
+  
+  document.getElementById("adminForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    var email = document.getElementById("adminEmail").value;
+    var password = document.getElementById("adminPassword").value;
+    
+    if (email === adminEmail && password === adminPassword) {
+      alert("Admin logged in successfully!");
+      localStorage.setItem("isAdmin", true);
+      window.location.href = "adminCatalog.html";
+    } else {
+      alert("Invalid email or password. Please try again.");
+    }
+    
+    document.getElementById("adminForm").reset();
+  });
+  </script>
+</body>
+</html>

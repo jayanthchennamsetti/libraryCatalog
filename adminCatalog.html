@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Catalog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Catalog</h1>
+        </div>
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search by title, author, or genre">
+            <button id="search-btn">Search</button>
+            <button onclick="window.location.href='addbook.html'" class="btn">Add Books</button>
+            <button id="logout-btn" class="btn">Logout</button>
+        </div>
+
+        <!-- Catalog View -->
+        <div id="book-list" class="book-grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Logout functionality
+        document.getElementById("logout-btn").addEventListener("click", function(event) {
+            localStorage.removeItem("isAdmin");
+            window.location.href = "login.html"; // Redirect to login page
+        });
+    </script>
+</body>
+</html>

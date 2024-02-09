@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Catalog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>UserLibrary Catalog</h1>
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search by title, author, or genre">
+            <button id="search-btn">Search</button>
+            <button id="cartButton">My Books</button>
+            <button id="logoutButton">Logout</button>
+            <script>
+document.getElementById("logoutButton").addEventListener("click", function() {
+  // Remove the loggedInUserId from local storage
+  localStorage.removeItem("loggedInUserId");
+  // Redirect the user to the login page
+  window.location.href = "login.html";
+});
+</script>
+            <!-- Add Cart Button -->
+            
+        </div>
+
+        <!-- Catalog View -->
+        <div id="book-list" class="book-grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Function to handle cart button click
+        document.getElementById("cartButton").addEventListener("click", function() {
+            // Get the logged-in user's ID
+            var userId = localStorage.getItem("loggedInUserId");
+            // Redirect to the user's cart page
+            window.location.href = "usercart.html?userId=" + userId;
+        });
+    </script>
+</body>
+</html>

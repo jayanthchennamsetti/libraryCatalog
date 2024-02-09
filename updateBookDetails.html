@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Book Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Update Book Details</h1>
+    <form id="update-book-form">
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" id="title" required>
+        </div>
+        <div>
+            <label for="author">Author:</label>
+            <input type="text" id="author" required>
+        </div>
+        <div>
+            <label for="isbn">ISBN:</label>
+            <input type="text" id="isbn" required>
+        </div>
+        <div>
+            <label for="genre">Genre:</label>
+            <input type="text" id="genre" required>
+        </div>
+        <div>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" min="1" required>
+        </div>
+        <button type="submit">Update Book</button>
+    </form>
+
+    <script>
+        // Retrieve book details from local storage and fill the form fields
+        const bookToUpdate = JSON.parse(localStorage.getItem('bookToUpdate'));
+        if (bookToUpdate) {
+            document.getElementById('title').value = bookToUpdate.title;
+            document.getElementById('author').value = bookToUpdate.author;
+            document.getElementById('isbn').value = bookToUpdate.isbn;
+            document.getElementById('genre').value = bookToUpdate.genre;
+            document.getElementById('quantity').value = bookToUpdate.quantity;
+        }
+
+        // Function to handle form submission
+        document.getElementById('update-book-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form input values
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const isbn = document.getElementById('isbn').value;
+            const genre = document.getElementById('genre').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            // Retrieve existing books from local storage
+            const existingBooks = JSON.parse(localStorage.getItem('libraryCatalog')) || [];
+
+            // Find the index of the book to update
+            const bookIndex = existingBooks.findIndex(book => {
+                return (
+                    book.title === bookToUpdate.title &&
+                    book.author === bookToUpdate.author &&
+                    book.isbn === bookToUpdate.isbn &&
+                    book.genre === bookToUpdate.genre
+                );
+            });
+
+            // Update the book in the array of existing books
+            existingBooks[bookIndex] = {
+                title: title,
+                author: author,
+                isbn: isbn,
+                genre: genre,
+                quantity: quantity,
+                availability: bookToUpdate.availability // Preserve the original availability
+            };
+
+            // Save the updated array of books to local storage
+            localStorage.setItem('libraryCatalog', JSON.stringify(existingBooks));
+
+            // Redirect back to the admin catalog page
+            window.location.href = 'adminCatalog.html';
+        });
+    </script>
+</body>
+</html>

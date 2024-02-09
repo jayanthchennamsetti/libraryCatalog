@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Books</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    #cartItems {
+        margin-top: 20px;
+    }
+
+    .book-details {
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+    }
+
+    .book-details p {
+        margin: 5px 0;
+    }
+
+    .book-details strong {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .return-button {
+        background-color: #b4cb2c; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 355px;
+    }
+
+    .return-button:hover {
+        background-color: #a0b819; /* Darker Green */
+    }
+
+    hr {
+        border: none;
+        border-top: 5px solid #a0b819;
+    }
+    .book-image {
+    text-align: center; /* Align image in the center */
+    margin-top: 10px; /* Add some top margin for spacing */
+}
+
+.book-image img {
+    max-width: 400px; /* Maximum width for the image */
+    height: 150px; /* Maintain aspect ratio */
+}
+</style>
+</head>
+<body>
+
+<h2>My Books</h2>
+
+<div class="container" id="cartItems">
+    <!-- Cart items will be displayed here -->
+</div>
+
+<script>
+    // Function to display user's cart items
+    function displayUserCart() {
+        var userId = localStorage.getItem("loggedInUserId");
+        var userCart = JSON.parse(localStorage.getItem("userCart_" + userId));
+
+        var cartItemsContainer = document.getElementById("cartItems");
+
+        // Clear previous content
+        cartItemsContainer.innerHTML = "";
+
+        if (!userCart) {
+            cartItemsContainer.innerHTML = "<p>Access Denied</p>";
+            return;
+        }
+
+        // Check if the cart is empty
+        else if (userCart.length === 0) {
+            cartItemsContainer.innerHTML = "<p>No books available in your cart.</p>";
+            return;
+        }
+
+        // If cart is not empty, display each book in the cart
+        userCart.forEach(function (book, index) {
+            var bookDetails = document.createElement("div");
+            bookDetails.classList.add("book-details");
+            bookDetails.innerHTML = `
+            <div class="book-image">
+            <img src="${book.image}" alt="${book.title} Image shows here">
+        </div>
+                <p style="text-align: center"><strong>Title:</strong> ${book.title}</p>
+                <p style="text-align: center"><strong>Author:</strong> ${book.author}</p>
+                <p style="text-align: center"><strong>ISBN:</strong> ${book.isbn}</p>
+                <p style="text-align: center"><strong>Genre:</strong> ${book.genre}</p>
+                <button class="return-button" data-index="${index}">Return</button>
+                <hr>
+            `;
+            cartItemsContainer.appendChild(bookDetails);
+        });
+
+        // Add event listener to each return button
+        document.querySelectorAll('.return-button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var index = this.getAttribute('data-index');
+                var bookTitle = userCart[index].title; // Get the title of the returned book
+
+                // Increment quantity of the book in libraryCatalog
+                incrementLibraryQuantity(userCart[index]);
+
+                // Update quantity in local storage
+                updateLocalStorageQuantity(userCart[index]);
+
+                // Remove book from user's cart
+                userCart.splice(index, 1);
+                localStorage.setItem("userCart_" + userId, JSON.stringify(userCart));
+
+                // Refresh cart display
+                displayUserCart();
+
+                // Display alert
+                alert("Thank you, " + bookTitle + " is returned successfully.");
+            });
+        });
+    }
+
+    // Function to increment quantity of the book in libraryCatalog
+    function incrementLibraryQuantity(book) {
+        var existingBooks = JSON.parse(localStorage.getItem('libraryCatalog')) || [];
+
+        existingBooks.forEach(function (existingBook) {
+            if (existingBook.title === book.title && existingBook.author === book.author && existingBook.isbn === book.isbn && existingBook.genre === book.genre) {
+                existingBook.quantity++;
+            }
+        });
+
+        localStorage.setItem('libraryCatalog', JSON.stringify(existingBooks));
+    }
+
+    // Function to update quantity in local storage
+    function updateLocalStorageQuantity(book) {
+        var userId = localStorage.getItem("loggedInUserId");
+        var userCart = JSON.parse(localStorage.getItem("userCart_" + userId));
+
+        userCart.forEach(function (cartBook) {
+            if (cartBook.title === book.title && cartBook.author === book.author && cartBook.isbn === book.isbn && cartBook.genre === book.genre) {
+                cartBook.quantity--;
+            }
+        });
+
+        localStorage.setItem("userCart_" + userId, JSON.stringify(userCart));
+    }
+
+    // Call the function to display user's cart items when the page loads
+    window.onload = function () {
+        displayUserCart();
+    };
+</script>
+
+
+</body>
+</html>

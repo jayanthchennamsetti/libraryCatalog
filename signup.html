@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup Page</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url(backgroundimg.jpg);
+  }
+  
+  #signupForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<div id="signupForm">
+  <h2>Signup Form</h2>
+
+  <form>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email"><br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password"><br><br>
+    <button type="submit">Sign Up</button>
+    <div style="margin-top:20px; margin-left: 5px;"><a href="login.html" style="text-decoration: none;color: #0e8734;">Already have account! click me to Log in.</a></div>
+  </form>
+</div>
+
+<script>
+document.querySelector("form").addEventListener("submit", function(event) {
+  event.preventDefault();
+  
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
+  
+  var users = JSON.parse(localStorage.getItem("users")) || [];
+  
+  var newUser = {
+    id: generateUniqueId(),
+    email: email,
+    password: password
+  };
+  
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+  
+  alert("User signed up successfully!");
+  document.querySelector("form").reset();
+  window.location.href='login.html';
+
+});
+
+function generateUniqueId() {
+  return '_' + Math.random().toString(36).substr(2, 9);
+}
+</script>
+
+</body>
+</html>
